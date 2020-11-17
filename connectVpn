@@ -1,0 +1,14 @@
+#!/bin/sh
+getOTP() {
+	echo $(oathtool --totp -b "P3WQZYKTJIH6V4VK");
+}
+domain="tramdth\n"
+pin="123456"
+OTP=`getOTP`
+vpnAuthPW=$pin$OTP
+vpnAcc="/tmp/vpnAcc"
+logFile=~/vpn.log
+echo "$domain$vpnAuthPW" >$vpnAcc
+
+nohup sudo openvpn --config ~/Downloads/client.ovpn --auth-user-pass $vpnAcc --up "/bin/sh -c \"rm $vpnAcc\"" | tee -a $logFile | grep --line-buffered "SIGUSR1" | while read line ; do echo "$domain$pin`getOTP`" >$vpnAcc; done > /dev/null &
+

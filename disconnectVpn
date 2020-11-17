@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo "Aa123456" | sudo -S pkill -15 openvpn
